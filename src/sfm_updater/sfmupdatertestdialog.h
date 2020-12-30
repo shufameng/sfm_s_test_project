@@ -15,6 +15,9 @@ public:
     SfmUpdaterTestDialog(QWidget *parent = nullptr);
     ~SfmUpdaterTestDialog();
 
+protected:
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+
 private:
     Ui::SfmUpdaterTestDialog *ui;
 };

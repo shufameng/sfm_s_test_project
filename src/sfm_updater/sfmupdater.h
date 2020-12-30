@@ -5,6 +5,12 @@
 #include <list>
 #include <tchar.h>
 #include <QDebug>
+#ifdef WIN32
+#include <Windows.h>
+#pragma comment(lib, "User32.lib")
+#include <WinInet.h>
+#pragma comment(lib, "Wininet.lib")
+#endif
 
 
 //
@@ -42,7 +48,59 @@ public:
     std::wstring downloadFromUrl;
     std::wstring saveToLocalPath;
 };
+
+//
 typedef void(*sfmupdater_download_cb)(void *param);
+class DownloadFuncParameter {
+public:
+    DownloadFuncParameter() :
+        onErrorCb(nullptr),
+        onErrorCbParam(nullptr),
+        onFinishedCb(nullptr),
+        onFinishedCbParam(nullptr)
+    {}
+    sfmupdater_download_cb onErrorCb;
+    void *onErrorCbParam;
+    sfmupdater_download_cb onFinishedCb;
+    void *onFinishedCbParam;
+    std::list<SFMUpdaterDownloadInfo> downloadList;
+};
+
+//
+class DownloadNotifyMessage
+{
+public:
+    DownloadNotifyMessage() : error(0), errorDesc(nullptr)
+    {
+
+    }
+
+    int error;
+    const char *errorDesc;
+};
+
+//
+class SFMUpdaterDownloadParam
+{
+public:
+    SFMUpdaterDownloadParam() : hWnd(nullptr)
+    {}
+
+    HWND hWnd;
+    LPCTSTR downloadFromUrl;
+    LPCTSTR saveToLocalPath;
+};
+
+//
+class SFMUpdaterDownloadResult
+{
+public:
+    SFMUpdaterDownloadResult() : error(0), errorDesc(nullptr)
+    {}
+
+    int error;
+    const TCHAR *errorDesc;
+};
 
 //
 class SFMUpdater
@@ -69,6 +127,8 @@ public:
                          void *onErrorCbParam,
                          sfmupdater_download_cb onFinishedCb,
                          void *onFinishedCbParam);
+
+    static void download(LPCTSTR url, LPCTSTR savePath, HWND hWnd);
 
 };
 

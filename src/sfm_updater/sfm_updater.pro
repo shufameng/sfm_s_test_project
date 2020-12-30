@@ -17,10 +17,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    sfmfiledownloader.cpp \
     sfmupdater.cpp \
     sfmupdatertestdialog.cpp
 
 HEADERS += \
+    sfmfiledownloader.h \
     sfmupdater.h \
     sfmupdatertestdialog.h
 
