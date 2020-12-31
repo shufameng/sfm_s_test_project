@@ -17,9 +17,27 @@ class SFMFileDownloader
 public:
 
     //
+    enum DownloadMessageType {
+        DownloadFinishedType = WM_USER + 100,
+        DownloadProgressType
+    };
+
+    //
     enum DownloadResultCode {
         OK = 0,
         NotOK
+    };
+
+    //
+    class DownloadTaskInfo
+    {
+    public:
+        DownloadTaskInfo()
+        {
+            memset(downloadFromUrl, '\0', sizeof(downloadFromUrl));
+        }
+        TCHAR downloadFromUrl[MAX_PATH];
+        TCHAR saveToLocalPath[MAX_PATH];
     };
 
     //
@@ -27,18 +45,8 @@ public:
     {
     public:
         DownloadParam() : hWnd(nullptr) {}
+        std::list<DownloadTaskInfo> downloadTaskList;
         HWND hWnd;
-        std::string downloadFromUrl;
-        std::string saveToLocalPath;
-    };
-
-    //
-    class DownloadInfo
-    {
-    public:
-        DownloadInfo() {}
-        std::string downloadFromUrl;
-        std::string saveToLocalPath;
     };
 
     //
@@ -50,20 +58,31 @@ public:
         std::string msg;
     };
 
+    //
+    class DownloadProgress
+    {
+    public:
+        DownloadProgress() : finished(0), total(0) {}
+        unsigned long long finished;
+        unsigned long long total;
+    };
+
     SFMFileDownloader();
     ~SFMFileDownloader();
 
-    void add(const DownloadInfo &download);
+    void add(const DownloadTaskInfo &download);
     void clean();
     void startDownload();
 
 protected:
     static DWORD WINAPI downloadThreadProc(LPVOID lpThreadParameter);
+    void postDownloadResultMessage();
+    void postDownloadProgressMessage();
 
 private:
-    std::list<DownloadInfo> m_downloadList;
-    DownloadParam *m_downloadParam;
-    DownloadResult *m_downloadResult;
+    DownloadParam *m_param;
+    DownloadResult *m_result;
+    DownloadProgress *m_progress;
 };
 
 #endif // SFMFILEDOWNLOADER_H
