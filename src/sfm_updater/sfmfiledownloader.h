@@ -44,9 +44,10 @@ public:
     class DownloadParam
     {
     public:
-        DownloadParam() : hWnd(nullptr) {}
+        DownloadParam() : hWnd(nullptr), downloader(nullptr) {}
         std::list<DownloadTaskInfo> downloadTaskList;
         HWND hWnd;
+        SFMFileDownloader *downloader;
     };
 
     //

@@ -1,6 +1,7 @@
 #include "sfmupdatertestdialog.h"
 #include "ui_sfmupdatertestdialog.h"
 #include "sfmupdater.h"
+#include <QMessageBox>
 
 SfmUpdaterTestDialog::SfmUpdaterTestDialog(QWidget *parent)
     : QDialog(parent)
@@ -11,9 +12,8 @@ SfmUpdaterTestDialog::SfmUpdaterTestDialog(QWidget *parent)
     connect(ui->pushButton_start_download, &QPushButton::clicked, [this]() {
         ui->progressBar_download_progress->setValue(0);
 
-        SFMUpdater::download(_T("http://localhost/FlashDevelop.zip"),
-                             _T("F:\\FlashDevelop.zip"),
-                             (HWND)winId());
+        SFMUpdater::downloadFile((HWND)winId(), _T("http://localhost/FlashDevelop.zip"),
+                             _T("F:\\FlashDevelop.zip"));
     });
 }
 
@@ -26,12 +26,20 @@ bool SfmUpdaterTestDialog::nativeEvent(const QByteArray &eventType, void *messag
 {
     MSG *msg = static_cast<MSG*>(message);
 
-    if (msg->message == WM_USER + 2) {
-
+    if (msg->message == MSG_TYPE_DOWNLOAD_FILE_FINISHED) {
         SFMUpdaterDownloadResult *rst = (SFMUpdaterDownloadResult*)(msg->lParam);
 
-        qDebug() << QString::fromWCharArray( rst->errorDesc );
     }
+    else if (msg->message == MSG_TYPE_DOWNLOAD_FILE_PROGRESS) {
+
+    }
+    else if (msg->message == MSG_TYPE_DOWNLOAD_FILE_BYTES_RECEIVED) {
+
+    }
+    else if (msg->message == MSG_TYPE_POST_REQUEST_FINISHED) {
+
+    }
+
 
     return QDialog::nativeEvent(eventType, message, result);
 }

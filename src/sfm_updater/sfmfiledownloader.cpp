@@ -3,6 +3,7 @@
 SFMFileDownloader::SFMFileDownloader()
 {
     m_param = new DownloadParam;
+    m_param->downloader = this;
     m_result = new DownloadResult;
     m_progress = new DownloadProgress;
 }
@@ -11,6 +12,7 @@ SFMFileDownloader::~SFMFileDownloader()
 {
     delete m_param;
     delete m_result;
+    delete m_progress;
 }
 
 void SFMFileDownloader::add(const SFMFileDownloader::DownloadTaskInfo &download)

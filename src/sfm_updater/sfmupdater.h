@@ -12,6 +12,15 @@
 #pragma comment(lib, "Wininet.lib")
 #endif
 
+// Message type
+#define MSG_TYPE_DOWNLOAD_FILE_FINISHED             (WM_USER + 0x01)
+#define MSG_TYPE_DOWNLOAD_FILE_PROGRESS             (WM_USER + 0x02)
+#define MSG_TYPE_DOWNLOAD_FILE_BYTES_RECEIVED       (WM_USER + 0x03)
+#define MSG_TYPE_HTTP_POST_FINISHED                 (WM_USER + 0x04)
+
+// Error Code
+#define ERROR_CODE_OK 0
+
 
 //
 class SFMUpdaterAppInfo
@@ -85,21 +94,42 @@ class SFMUpdaterDownloadParam
 public:
     SFMUpdaterDownloadParam() : hWnd(nullptr)
     {}
-
     HWND hWnd;
-    LPCTSTR downloadFromUrl;
-    LPCTSTR saveToLocalPath;
+    std::wstring downloadUrl;
+    std::wstring localPath;
 };
 
 //
 class SFMUpdaterDownloadResult
 {
 public:
-    SFMUpdaterDownloadResult() : error(0), errorDesc(nullptr)
+    SFMUpdaterDownloadResult() : resCode(0)
     {}
+    int resCode;
+    std::string resMsg;
+    std::string downloadUrl;
+};
 
-    int error;
-    const TCHAR *errorDesc;
+//
+class SFMUpdaterHttpPostParam {
+public:
+    SFMUpdaterHttpPostParam() : hWnd(NULL), port(80)
+    {}
+    HWND hWnd;
+    std::wstring host;
+    int port;
+    std::wstring location;
+    std::wstring formData;
+};
+
+//
+class SFMUpdaterHttpPostResult {
+public:
+    SFMUpdaterHttpPostResult() : resCode(0)
+    {}
+    int resCode;
+    std::string resMsg;
+    std::wstring url;
 };
 
 //
@@ -121,15 +151,22 @@ public:
         }
     }
 
+    static std::string wideCharToMultiByte(unsigned int codePage, const wchar_t *wideCharBuffer);
+    static std::wstring multiByteToWideChar(unsigned int codePage, const char *multiByteBuffer);
 
-    static void download(const std::list<SFMUpdaterDownloadInfo> &downloadList,
-                         sfmupdater_download_cb onErrorCb,
-                         void *onErrorCbParam,
-                         sfmupdater_download_cb onFinishedCb,
-                         void *onFinishedCbParam);
+    static void downloadFile(HWND hWNd, const std::wstring &downloadUrl, const std::wstring &localPath);
+    static DWORD WINAPI downloadFileThreadProc(LPVOID lpThreadParameter);
 
-    static void download(LPCTSTR url, LPCTSTR savePath, HWND hWnd);
+    static void httpPost(HWND hWnd, const std::wstring &host, int port, const std::wstring &location, const std::wstring &formData);
+    static DWORD WINAPI httpPostThreadProc(LPVOID lpThreadParameter);
 
+
+    void updateSoft();
+
+private:
+    std::string m_logDirPath;
+    std::string m_downloadDirPath;
+    std::string m_appExecuteablePath;
 };
 
 #endif // SFMUPDATER_H
