@@ -130,6 +130,7 @@ public:
     int resCode;
     std::string resMsg;
     std::wstring url;
+    std::string replyData;
 };
 
 //

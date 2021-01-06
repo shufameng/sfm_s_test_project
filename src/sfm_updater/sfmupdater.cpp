@@ -84,7 +84,6 @@ void SFMUpdater::downloadFile(HWND hWnd, const std::wstring &downloadUrl, const 
     if (!hThreadHandle) {
         SFMUpdaterDownloadResult *res = new SFMUpdaterDownloadResult;
         res->resCode = 1;
-        res->downloadUrl;
         res->resMsg = "CreateThread() returns null";
         PostMessage(hWnd, MSG_TYPE_DOWNLOAD_FILE_FINISHED, NULL, (LPARAM)res);
         delete param;
@@ -176,7 +175,7 @@ void SFMUpdater::httpPost(HWND hWnd, const std::wstring &host, int port, const s
     HANDLE hThreadHandle = CreateThread(NULL, 0, httpPostThreadProc, (LPVOID)param, 0, &dwThreadId);
     if (!hThreadHandle) {
         SFMUpdaterHttpPostResult *res = new SFMUpdaterHttpPostResult;
-        res->resCode = ERROR_CODE_OK;
+        res->resCode = -1;
         res->resMsg = "CreateThread() returns null";
         PostMessage(hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)res);
         delete param;
@@ -187,20 +186,18 @@ void SFMUpdater::httpPost(HWND hWnd, const std::wstring &host, int port, const s
 DWORD SFMUpdater::httpPostThreadProc(LPVOID lpThreadParameter)
 {
     SFMUpdaterHttpPostParam *param = (SFMUpdaterHttpPostParam*)lpThreadParameter;
+    SFMUpdaterHttpPostResult *result = new SFMUpdaterHttpPostResult;
 
     HINTERNET hInternet = InternetOpen(_T("SFMUpdater"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
     if (!hInternet) {
-        SFMUpdaterHttpPostResult *res = new SFMUpdaterHttpPostResult;
-        res->resCode = 1;
-        res->resMsg = "InternetOpen() returns null";
-        PostMessage(param->hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)res);
+        result->resCode = 1;
+        result->resMsg = "InternetOpen() returns null";
+        PostMessage(param->hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)result);
         delete param;
         return 1;
     }
-
     HINTERNET hConnect = InternetConnect(hInternet, param->host.c_str(), param->port, NULL, NULL, INTERNET_SERVICE_HTTP, NULL, NULL);
     if (!hConnect) {
-        SFMUpdaterHttpPostResult *result = new SFMUpdaterHttpPostResult;
         result->resCode = 2;
         result->resMsg = "InternetConnect() returns null";
         PostMessage(param->hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)result);
@@ -209,7 +206,6 @@ DWORD SFMUpdater::httpPostThreadProc(LPVOID lpThreadParameter)
     }
     HINTERNET hRequest = HttpOpenRequest(hConnect, _T("POST"), param->location.c_str(), HTTP_VERSION, NULL, NULL, INTERNET_FLAG_DONT_CACHE, NULL);
     if (!hRequest) {
-        SFMUpdaterHttpPostResult *result = new SFMUpdaterHttpPostResult;
         result->resCode = 3;
         result->resMsg = "HttpOpenRequest() returns null";
         PostMessage(param->hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)result);
@@ -218,7 +214,6 @@ DWORD SFMUpdater::httpPostThreadProc(LPVOID lpThreadParameter)
     }
     std::string multiByteData = wideCharToMultiByte(CP_UTF8, param->formData.c_str());
     if (!HttpSendRequest(hRequest, NULL, 0, (void*)multiByteData.c_str(), strlen(multiByteData.c_str()))) {
-        SFMUpdaterHttpPostResult *result = new SFMUpdaterHttpPostResult;
         result->resCode = 4;
         result->resMsg = "HttpSendRequest() returns false";
         PostMessage(param->hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)result);
@@ -226,20 +221,24 @@ DWORD SFMUpdater::httpPostThreadProc(LPVOID lpThreadParameter)
         return 4;
     }
     DWORD readLen = 0;
-    int bufferLen = 1024 * 1024 * 2;
+    int bufferLen = 1024 * 1024;
     std::shared_ptr<char[]> bufferPtr(new char[bufferLen]);
-    memset(bufferPtr.get(), '\0', bufferLen);
     while (true) {
+        memset(bufferPtr.get(), '\0', bufferLen);
         if (!InternetReadFile(hRequest, bufferPtr.get(), bufferLen, &readLen)) {
+            result->resCode = 5;
+            result->resMsg = "InternetReadFile() returns false";
+            PostMessage(param->hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)result);
+            delete param;
             return 5;
         }
-        if (readLen <= 0) {
+        if (readLen > 0) {
+            result->replyData += bufferPtr.get();
+        } else {
             break;
         }
     }
 
-    delete param;
-    SFMUpdaterHttpPostResult *result = new SFMUpdaterHttpPostResult;
     result->resCode = ERROR_CODE_OK;
     result->resMsg = "OK";
     PostMessage(param->hWnd, MSG_TYPE_HTTP_POST_FINISHED, NULL, (LPARAM)result);
