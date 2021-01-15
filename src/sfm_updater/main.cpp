@@ -3,6 +3,7 @@
 #include <QApplication>
 #include "sfmupdater.h"
 #include <QDebug>
+#include "tinyxml.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<QString> qstring_ptr(new QString);
 
-
+    TiXmlDocument doc;
 
 
     return a.exec();

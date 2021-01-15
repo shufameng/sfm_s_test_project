@@ -140,12 +140,12 @@ public:
     SFMUpdater();
 
 #ifdef WIN32
-    static bool getFileInfoFromDir(const std::wstring &dirPath, std::list<SFMUpdaterFileInfo> &listOut);
+    static bool getFileStateListFromDir(const std::wstring &dirPath, std::list<SFMUpdaterFileInfo> &listOut);
 #endif
 
     static void test_getFileInfoFromDir() {
         std::list<SFMUpdaterFileInfo> list;
-        getFileInfoFromDir(_T("F:\\download\\zhibo"), list);
+        getFileStateListFromDir(_T("F:\\download\\zhibo"), list);
 
         for (std::list<SFMUpdaterFileInfo>::const_iterator iter = list.cbegin(); iter != list.cend(); ++ iter) {
             qDebug() << QString::fromStdWString((*iter).absoluteDir) << QString::fromStdWString((*iter).name);

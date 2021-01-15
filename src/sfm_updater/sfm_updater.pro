@@ -33,3 +33,9 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+LIBS += \
+    -l$$PWD/../third_party/tinyxml_static/lib/tinyxml
+
+INCLUDEPATH += \
+    $$PWD/../third_party/tinyxml_static/include

@@ -1,5 +1,6 @@
 #include "sfmupdater.h"
 #include <tchar.h>
+#include "tinyxml.h"
 #include <QtDebug>
 
 
@@ -32,6 +33,8 @@ std::wstring SFMUpdater::multiByteToWideChar(unsigned int codePage, const char *
 void SFMUpdater::updateSoft()
 {
     // 获取最新文件状态信息
+
+
     // 获取本地文件状态信息
     // 比对最新和本地文件状态信息,获取到需要更新的文件
     // 下载需要更新的文件
@@ -39,7 +42,7 @@ void SFMUpdater::updateSoft()
 }
 
 #ifdef WIN32
-bool SFMUpdater::getFileInfoFromDir(const std::wstring &dirPath, std::list<SFMUpdaterFileInfo> &listOut)
+bool SFMUpdater::getFileStateListFromDir(const std::wstring &dirPath, std::list<SFMUpdaterFileInfo> &listOut)
 {
     WIN32_FIND_DATA find_data;
     HANDLE hFile;
@@ -54,7 +57,7 @@ bool SFMUpdater::getFileInfoFromDir(const std::wstring &dirPath, std::list<SFMUp
     while (true) {
         if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
             if (lstrcmp(find_data.cFileName, _T(".")) != 0 && lstrcmp(find_data.cFileName, _T("..")) != 0) {
-                if (!getFileInfoFromDir(dirPath + _T("\\") + find_data.cFileName, listOut)) {
+                if (!getFileStateListFromDir(dirPath + _T("\\") + find_data.cFileName, listOut)) {
                     return false;
                 }
             }
