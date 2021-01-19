@@ -6,6 +6,8 @@
 class SFMRectItem;
 class SFMEllipseItem;
 class SFMPixmapItem;
+class SFMSquareItem;
+class SFMRoundItem;
 
 class SFMGraphicsScene : public QGraphicsScene
 {
@@ -23,6 +25,8 @@ public:
     SFMRectItem *addResizeableRect(const QRectF &r);
     SFMEllipseItem *addResizeableEllipse(const QRectF &r);
     SFMPixmapItem *addResizeablePixmap(const QPixmap &p);
+    SFMSquareItem *addSquareItem(const QRectF &r);
+    SFMRoundItem *addRoundItem(const QRectF &r);
 
 };
 

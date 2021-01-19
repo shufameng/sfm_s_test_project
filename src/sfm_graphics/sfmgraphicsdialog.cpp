@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QButtonGroup>
 
 SFMGraphicsScene *g_scene = Q_NULLPTR;
 SFMGraphicsView *g_view = Q_NULLPTR;
@@ -16,9 +17,40 @@ SFMGraphicsDialog::SFMGraphicsDialog(QWidget *parent)
     , ui(new Ui::SFMGraphicsDialog)
 {
     ui->setupUi(this);
+    resize(1920, 1080);
+
+    QButtonGroup *grp = new QButtonGroup(this);
+    grp->addButton(ui->toolButton_rect);
+    grp->addButton(ui->toolButton_round);
+    grp->addButton(ui->toolButton_pixmap);
+    grp->addButton(ui->toolButton_select);
+    grp->addButton(ui->toolButton_square);
+    grp->addButton(ui->toolButton_ellipse);
 
     QHBoxLayout *lay = new QHBoxLayout(ui->widget_view);
     lay->addWidget(g_view = new SFMGraphicsView(this));
+    connect(g_view, &SFMGraphicsView::currentToolChanged, [this](int oldTool, int currentTool) {
+        switch (currentTool) {
+        case SFMGraphicsView::Tool_Round:
+            ui->toolButton_round->setChecked(true);
+            break;
+        case SFMGraphicsView::Tool_Pixmap:
+            ui->toolButton_pixmap->setChecked(true);
+            break;
+        case SFMGraphicsView::Tool_Select:
+            ui->toolButton_select->setChecked(true);
+            break;
+        case SFMGraphicsView::Tool_Square:
+            ui->toolButton_square->setChecked(true);
+            break;
+        case SFMGraphicsView::Tool_ResizeableRect:
+            ui->toolButton_rect->setChecked(true);
+            break;
+        case SFMGraphicsView::Tool_ResizeableEllipse:
+            ui->toolButton_ellipse->setChecked(true);
+            break;
+        }
+    });
 
     g_view->setScene(g_scene = new SFMGraphicsScene(g_view));
 
@@ -46,7 +78,7 @@ SFMGraphicsDialog::SFMGraphicsDialog(QWidget *parent)
     });
 
     connect(ui->toolButton_round, &QToolButton::clicked, [this]() {
-
+        g_view->setCurrentTool(SFMGraphicsView::Tool_Round);
     });
 
     connect(ui->toolButton_ellipse, &QToolButton::clicked, [this]() {
@@ -54,7 +86,7 @@ SFMGraphicsDialog::SFMGraphicsDialog(QWidget *parent)
     });
 
     connect(ui->toolButton_square, &QToolButton::clicked, [this]() {
-
+        g_view->setCurrentTool(SFMGraphicsView::Tool_Square);
     });
 
     connect(ui->toolButton_select, &QToolButton::clicked, [this]() {

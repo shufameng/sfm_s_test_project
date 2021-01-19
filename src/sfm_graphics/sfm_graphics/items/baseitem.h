@@ -13,6 +13,10 @@ public:
 
     static void drawSelectionRect(const QRectF &r, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     static void drawDragResizeRect(const QRectF &r,  QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+protected:
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *e) override;
+
 };
 
 #endif // BASEITEM_H

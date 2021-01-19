@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/items/sfmellipseitem.h \
     $$PWD/items/sfmpixmapitem.h \
     $$PWD/items/sfmrectitem.h \
+    $$PWD/items/sfmrounditem.h \
     $$PWD/items/sfmselectionborderitem.h \
     $$PWD/items/sfmsquareitem.h \
     $$PWD/sfmgraphicsscene.h \
@@ -17,6 +18,7 @@ SOURCES += \
     $$PWD/items/sfmellipseitem.cpp \
     $$PWD/items/sfmpixmapitem.cpp \
     $$PWD/items/sfmrectitem.cpp \
+    $$PWD/items/sfmrounditem.cpp \
     $$PWD/items/sfmselectionborderitem.cpp \
     $$PWD/items/sfmsquareitem.cpp \
     $$PWD/sfmgraphicsscene.cpp \

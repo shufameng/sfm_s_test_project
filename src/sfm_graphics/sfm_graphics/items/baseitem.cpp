@@ -1,4 +1,6 @@
 #include "baseitem.h"
+#include <QMenu>
+#include <QGraphicsScene>
 
 BaseItem::BaseItem(QGraphicsItem *parent) :
     QGraphicsItem(parent)
@@ -45,4 +47,26 @@ void BaseItem::drawDragResizeRect(const QRectF &r, QPainter *painter, const QSty
 
     painter->restore();
 }
+
+void BaseItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *e)
+{
+    QGraphicsItem::contextMenuEvent(e);
+
+    QMenu m;
+    m.addAction(QIcon(), "Stack to top", [this]() {
+        if (scene()) {
+            QList<QGraphicsItem*> list = scene()->items(this->boundingRect(), Qt::IntersectsItemBoundingRect);
+            foreach (QGraphicsItem *item, list) {
+                this->stackBefore(item);
+            }
+        }
+    });
+    m.addAction(QIcon(), "Delete", [this]() {
+        if (scene()) {
+            scene()->removeItem(this);
+        }
+    });
+    m.exec(QCursor::pos());
+}
+
 

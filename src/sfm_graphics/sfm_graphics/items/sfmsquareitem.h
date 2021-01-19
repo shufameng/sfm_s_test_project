@@ -16,7 +16,7 @@ public:
     };
 
     explicit SFMSquareItem(QGraphicsItem *parent = Q_NULLPTR);
-    explicit SFMSquareItem(const QRect &r, QGraphicsItem *parent = Q_NULLPTR);
+    explicit SFMSquareItem(const QRectF &r, QGraphicsItem *parent = Q_NULLPTR);
 
     void setRect(const QRectF &r);
 
@@ -42,6 +42,9 @@ protected:
     m_dragRectTopRight,
     m_dragRectBottomLeft,
     m_dragRectBottomRight;
+
+    bool m_isLButtonOnPress;
+    QPointF m_lButtonPressPos;
 
     void calculateRects();
     void initItem();

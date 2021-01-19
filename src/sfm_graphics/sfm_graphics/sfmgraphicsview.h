@@ -30,8 +30,8 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
-
-
+signals:
+    void currentToolChanged(int oldTool, int currentTool);
 private:
     bool m_isLButtonOnPress;
 

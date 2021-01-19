@@ -2,6 +2,8 @@
 #include "sfmrectitem.h"
 #include "sfmellipseitem.h"
 #include "sfmpixmapitem.h"
+#include "sfmsquareitem.h"
+#include "sfmrounditem.h"
 
 SFMGraphicsScene::SFMGraphicsScene(QObject *parent) :
     QGraphicsScene(parent)
@@ -32,6 +34,20 @@ SFMPixmapItem *SFMGraphicsScene::addResizeablePixmap(const QPixmap &p)
 {
     SFMPixmapItem *item = new SFMPixmapItem;
     item->setPixmap(p);
+    addItem(item);
+    return item;
+}
+
+SFMSquareItem *SFMGraphicsScene::addSquareItem(const QRectF &r)
+{
+    SFMSquareItem *item = new SFMSquareItem(r);
+    addItem(item);
+    return item;
+}
+
+SFMRoundItem *SFMGraphicsScene::addRoundItem(const QRectF &r)
+{
+    SFMRoundItem *item = new SFMRoundItem(r);
     addItem(item);
     return item;
 }
