@@ -16,6 +16,7 @@ public:
     };
 
     explicit SFMSquareItem(QGraphicsItem *parent = Q_NULLPTR);
+
     explicit SFMSquareItem(const QRectF &r, QGraphicsItem *parent = Q_NULLPTR);
 
     void setRect(const QRectF &r);

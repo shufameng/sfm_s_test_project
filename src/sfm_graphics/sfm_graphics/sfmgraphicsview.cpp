@@ -19,6 +19,13 @@ SFMGraphicsView::SFMGraphicsView(QWidget *parent) :
     setTransformationAnchor(QGraphicsView::NoAnchor);
     setSceneRect(QRectF(0, 0, 1920, 1080));
     setRenderHints(QPainter::Antialiasing);
+
+    m_toolPen.setStyle(Qt::SolidLine);
+    m_toolPen.setColor(QColor(125, 125, 200));
+    m_toolPen.setWidthF(4);
+
+    m_toolBrush.setStyle(Qt::SolidPattern);
+    m_toolBrush.setColor(QColor(255, 0, 50));
 }
 
 SFMGraphicsView::~SFMGraphicsView()
@@ -56,12 +63,6 @@ void SFMGraphicsView::setCurrentTool(SFMGraphicsView::Tool t)
 void SFMGraphicsView::mousePressEvent(QMouseEvent *e)
 {
     QPointF sp = mapToScene(e->pos());
-    QPen p(Qt::SolidLine);
-    p.setColor(QColor(100, 100, 255));
-    p.setWidthF(6);
-    QBrush b(Qt::SolidPattern);
-    b.setColor(QColor(100, 100, 50));
-
     QRectF r(sp - QPointF(100, 100), QSizeF(200, 200));
 
     SFMGraphicsScene *s = qobject_cast<SFMGraphicsScene*>(scene());
@@ -70,32 +71,32 @@ void SFMGraphicsView::mousePressEvent(QMouseEvent *e)
         case Tool_ResizeableRect:
         {
             SFMRectItem *item = s->addResizeableRect(r);
-            item->setPen(p);
-            item->setBrush(b);
+            item->setPen(m_toolPen);
+            item->setBrush(m_toolBrush);
             setCurrentTool(Tool_Select);
         }
             break;
         case Tool_Square:
         {
             SFMSquareItem *item = s->addSquareItem(r);
-            item->setPen(p);
-            item->setBrush(b);
+            item->setPen(m_toolPen);
+            item->setBrush(m_toolBrush);
             setCurrentTool(Tool_Select);
         }
             break;
         case Tool_ResizeableEllipse:
         {
             SFMEllipseItem *item = s->addResizeableEllipse(r);
-            item->setPen(p);
-            item->setBrush(b);
+            item->setPen(m_toolPen);
+            item->setBrush(m_toolBrush);
             setCurrentTool(Tool_Select);
         }
             break;
         case Tool_Round:
         {
             SFMRoundItem *item = s->addRoundItem(r);
-            item->setPen(p);
-            item->setBrush(b);
+            item->setPen(m_toolPen);
+            item->setBrush(m_toolBrush);
             setCurrentTool(Tool_Select);
         }
             break;

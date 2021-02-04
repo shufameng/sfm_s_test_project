@@ -2,6 +2,7 @@ HEADERS += \
     $$PWD/items/baseitem.h \
     $$PWD/items/cncharitem.h \
     $$PWD/items/sfmbaseshapeitem.h \
+    $$PWD/items/sfmchoicequestionitem.h \
     $$PWD/items/sfmellipseitem.h \
     $$PWD/items/sfmpixmapitem.h \
     $$PWD/items/sfmrectitem.h \
@@ -15,6 +16,7 @@ SOURCES += \
     $$PWD/items/baseitem.cpp \
     $$PWD/items/cncharitem.cpp \
     $$PWD/items/sfmbaseshapeitem.cpp \
+    $$PWD/items/sfmchoicequestionitem.cpp \
     $$PWD/items/sfmellipseitem.cpp \
     $$PWD/items/sfmpixmapitem.cpp \
     $$PWD/items/sfmrectitem.cpp \

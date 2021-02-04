@@ -9,6 +9,7 @@ public:
     explicit CNCharItem(QGraphicsItem *parent = Q_NULLPTR);
 
     QRectF boundingRect() const override;
+
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     void setCNChar(const QString &ch);

@@ -20,6 +20,7 @@ public:
     };
 
     explicit SFMRectItem(QGraphicsItem *parent = Q_NULLPTR);
+
     explicit SFMRectItem(const QRectF &rct, QGraphicsItem *parent = Q_NULLPTR);
 
     void setRect(const QRectF &r);

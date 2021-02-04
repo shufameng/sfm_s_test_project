@@ -36,6 +36,8 @@ private:
     bool m_isLButtonOnPress;
 
     Tool m_currentTool;
+    QPen m_toolPen;
+    QBrush m_toolBrush;
 
     QPixmap m_pixmapForItem;
     QString m_pixmapForItemFilePath;
